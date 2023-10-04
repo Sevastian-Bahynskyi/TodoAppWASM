@@ -1,0 +1,49 @@
+{
+  "Users": [
+    {
+      "Id": 1,
+      "Username": "Sevastian"
+    },
+    {
+      "Id": 2,
+      "Username": "Michael"
+    },
+    {
+      "Id": 3,
+      "Username": "Emanuel"
+    },
+    {
+      "Id": 4,
+      "Username": "Dan"
+    }
+  ],
+  "Todos": [
+    {
+      "Id": 1,
+      "Owner": {
+        "Id": 4,
+        "Username": "Dan"
+      },
+      "Title": "This todo was changed\uD83D\uDC80",
+      "IsCompleted": true
+    },
+    {
+      "Id": 2,
+      "Owner": {
+        "Id": 2,
+        "Username": "Michael"
+      },
+      "Title": "Test todo1",
+      "IsCompleted": true
+    },
+    {
+      "Id": 4,
+      "Owner": {
+        "Id": 3,
+        "Username": "Emanuel"
+      },
+      "Title": "Very large todo, there are many characters that just use space and probably are not important, but I need to dos this, to test if label will wrap my text, at least I hope so.",
+      "IsCompleted": true
+    }
+  ]
+}
