@@ -1,0 +1,12 @@
+<!-- TodoCard.razor -->
+@using Domain.Models
+<div class="todo-card">
+    <label style="color: dodgerblue; font-size: 1.2rem">@Todo.Title</label>
+    <label style="text-align: end">Assignee: @Todo.Owner.Username</label>
+</div>
+
+
+@code {
+    [Parameter]
+    public Todo Todo { get; set; }
+}
