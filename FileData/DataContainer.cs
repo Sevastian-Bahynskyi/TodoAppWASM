@@ -1,4 +1,4 @@
-using Shared;
+using Domain.Models;
 
 namespace FileData;
 

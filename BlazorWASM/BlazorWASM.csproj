@@ -15,4 +15,12 @@
       <ProjectReference Include="..\HttpClients\HttpClients.csproj" />
     </ItemGroup>
 
+
+
+    <ItemGroup>
+      <Content Update="Pages\TodoCategoryList.razor">
+        <DependentUpon>ViewTodos.razor</DependentUpon>
+      </Content>
+    </ItemGroup>
+
 </Project>

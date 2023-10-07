@@ -1,0 +1,20 @@
+<!-- TodoCard.razor -->
+@using Domain.Models
+
+<h3 class="col-title">@Title</h3>
+@foreach (var todo in Todos)
+{
+    <div class="todo-card">
+        <label style="color: dodgerblue; font-size: 1.1rem">@todo.Title</label>
+        <label style="text-align: end">Assignee: @todo.Owner.Username</label>
+    </div>
+}
+
+
+
+@code {
+    [Parameter]
+    public IEnumerable<Todo> Todos { get; set; }
+
+    [Parameter] public string Title { get; set; }
+}

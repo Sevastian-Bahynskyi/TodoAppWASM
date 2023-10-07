@@ -1,0 +1,30 @@
+/*noinspection ALL*/
+::deep .todo-card{
+    width: 20rem;
+    height: fit-content;
+    display: flex;
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 0.4rem;
+    padding: 10px;
+    margin-bottom: 2rem;
+    flex-direction: column;
+    background-color: limegreen;
+}
+
+.todos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+::deep .todo-card label{
+    user-select: none;
+}
+
+body{
+    background-color: lightgreen;
+}
+
+h2{
+    text-align: center;
+}

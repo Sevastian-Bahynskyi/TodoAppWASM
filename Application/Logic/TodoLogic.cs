@@ -1,7 +1,7 @@
 using Application.LogicInterfaces;
 using Domain.CustomExceptions;
 using Domain.DTOs;
-using Shared;
+using Domain.Models;
 
 namespace Application.Logic;
 

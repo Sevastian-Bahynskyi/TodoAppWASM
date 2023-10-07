@@ -1,8 +1,8 @@
 using Application.LogicInterfaces;
 using Domain.CustomExceptions;
 using Domain.DTOs;
+using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using Shared;
 
 namespace WebAPI.Controllers;
 

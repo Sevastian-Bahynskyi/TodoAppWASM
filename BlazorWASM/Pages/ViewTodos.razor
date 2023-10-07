@@ -1,0 +1,32 @@
+@page "/ViewTodos"
+@using HttpClients.ClientInterfaces
+@using Domain.Models;
+@using Domain.DTOs
+@inject ITodoService todoService
+
+@if (todoList == null)
+{
+    <label>Loading...</label>
+}
+else
+{
+    <div class="container-fluid row p-0 no-gutters d-flex">
+        <div class="todos col-sm">
+            <TodoCategoryList Title="Tasks TODO" Todos="todoList.Where(t => !t.IsCompleted)"></TodoCategoryList>
+        </div>
+        <div class="vr vr-blurry p-0 d-flex flex-column justify-content-between"></div>
+        <div class="todos col-sm">
+            <TodoCategoryList Title="Completed tasks" Todos="todoList.Where(t => t.IsCompleted)"></TodoCategoryList>
+        </div>
+    </div>
+    
+}
+
+@code {
+    private IEnumerable<Todo>? todoList;
+    private Todo? currentTodo;
+    protected override async Task OnInitializedAsync()
+    {
+        todoList = await todoService.GetAllAsync(new SearchTodoParametersDto());
+    }
+}

@@ -1,6 +1,6 @@
 using System.Collections;
 using Domain.DTOs;
-using Shared;
+using Domain.Models;
 
 namespace Application.LogicInterfaces;
 

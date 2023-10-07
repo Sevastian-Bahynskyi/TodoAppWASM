@@ -1,6 +1,44 @@
 @page "/CreateUser"
-<h3>CreateUser</h3>
+@using Domain.DTOs
+@using HttpClients.ClientInterfaces
+@inject IUserService userService;
+
+<div class="card">
+    <h3>Create User</h3>
+    <div class="form-group field">
+        <label>User name:</label>
+        <input type="text" @bind="username" @bind:event="oninput"/>
+    </div>
+    @if (!string.IsNullOrEmpty(resultMsg))
+            {
+                <label style="color: @color">@resultMsg</label>
+            }
+    <div class="button-row">
+        <button type="button" @onclick="Create" disabled="@(string.IsNullOrEmpty(username))" class="actionbtn">Create</button>
+    </div>
+</div>
 
 @code {
-    
+    private string username = "";
+    private string resultMsg = "";
+    private string color = "";
+
+    private async Task Create()
+    {
+        resultMsg = "";
+
+        try
+        {
+            await userService.CreateAsync(new UserCreationDto(username));
+            username = "";
+            resultMsg = "User successfully created";
+            color = "green";
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            resultMsg = e.Message;
+            color = "red";
+        }
+    }
 }

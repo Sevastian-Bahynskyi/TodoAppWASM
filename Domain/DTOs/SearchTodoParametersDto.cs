@@ -15,4 +15,9 @@ public class SearchTodoParametersDto
         CompletedStatus = completedStatus;
         TitleContains = titleContains;
     }
+
+    public SearchTodoParametersDto()
+    {
+        
+    }
 }
