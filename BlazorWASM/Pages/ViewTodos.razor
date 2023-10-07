@@ -3,30 +3,114 @@
 @using Domain.Models;
 @using Domain.DTOs
 @inject ITodoService todoService
+@inject IUserService userService
 
-@if (todoList == null)
+@if (todoList == null && completedTodoList == null)
 {
     <label>Loading...</label>
 }
 else
 {
+    <div class="filters-container">
+        <img class="funnel" src="@(doShowFilters? "icons/funnel.png": "icons/clear_funnel.png")" @onclick="() => doShowFilters = !doShowFilters" alt="@(doShowFilters? "Filter" : "Not filter")"/>
+        @if (doShowFilters)
+        {
+            <div class="filter">
+                <label>Assignee username:</label>
+                <select @bind="selectedUserIdFilter">
+                    @if (userList == null)
+                    {
+                        <option>Loading...</option>
+                    }
+                    else
+                    {
+                        <option value="null">All</option>
+                        foreach (var user in userList)
+                        {
+                            <option value="@user.Id">@user.Username</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="filter">
+                <label>Show TODOs:</label>
+                <select @bind="completedFilter">
+                    <option value="all">All</option>
+                    <option value="true">Only completed</option>
+                    <option value="false">Needs to be completed</option>
+                </select>
+            </div>
+            <div class="filter">
+                <label>Title contains:</label>
+                <input type="text" @bind="titleContainsFilter"/>
+            </div>
+            <button class="actionbtn text-nowrap" @onclick="ApplyFilters">Apply filters</button>
+        }
+    </div>
     <div class="container-fluid row p-0 no-gutters d-flex">
         <div class="todos col-sm">
-            <TodoCategoryList Title="Tasks TODO" Todos="todoList.Where(t => !t.IsCompleted)"></TodoCategoryList>
+            @if (todoList != null)
+            {
+                <TodoCategoryList Title="Tasks TODO" @bind-Todos="@todoList"></TodoCategoryList>
+            }
         </div>
         <div class="vr vr-blurry p-0 d-flex flex-column justify-content-between"></div>
         <div class="todos col-sm">
-            <TodoCategoryList Title="Completed tasks" Todos="todoList.Where(t => t.IsCompleted)"></TodoCategoryList>
+            @if (completedTodoList != null)
+            {
+                <TodoCategoryList Title="Completed tasks" @bind-Todos="completedTodoList"></TodoCategoryList>
+            }
         </div>
     </div>
     
 }
 
 @code {
+    private IEnumerable<Todo>? completedTodoList;
     private IEnumerable<Todo>? todoList;
-    private Todo? currentTodo;
+    private IEnumerable<User>? userList;
+    private bool doShowFilters = false;
+    
+    private string? selectedUserIdFilter;
+    private string? titleContainsFilter;
+    private string completedFilter = "all";
+    
     protected override async Task OnInitializedAsync()
     {
-        todoList = await todoService.GetAllAsync(new SearchTodoParametersDto());
+        todoList = (await todoService.GetAsync(new SearchTodoParametersDto())).Where(t => !t.IsCompleted);
+        completedTodoList = (await todoService.GetAsync(new SearchTodoParametersDto())).Where(t => t.IsCompleted);
+        userList = await userService.GetAllAsync(new SearchUserParametersDto(null));
+    }
+
+    private async Task ApplyFilters()
+    {
+        bool? completedStatus = completedFilter == "all" ? null : bool.Parse(completedFilter);
+        int? userIdFilter = int.TryParse(selectedUserIdFilter, out _)? int.Parse(selectedUserIdFilter!) : null;
+
+        if (completedStatus.HasValue)
+        {
+            IEnumerable<Todo> filteredList = await todoService.GetAsync(new SearchTodoParametersDto(
+                null, userIdFilter, completedStatus, titleContainsFilter));
+
+            if (!completedStatus.Value)
+            {
+                todoList = filteredList;
+                completedTodoList = null;
+            }
+            else
+            {
+                todoList = null;
+                completedTodoList = filteredList;
+            }
+        }
+        else
+        {
+            todoList = await todoService.GetAsync(new SearchTodoParametersDto(
+                null, userIdFilter, false, titleContainsFilter));
+            completedTodoList = await todoService.GetAsync(new SearchTodoParametersDto(
+                null, userIdFilter, true, titleContainsFilter));
+        }
+
+
     }
 }

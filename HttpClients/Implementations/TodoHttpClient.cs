@@ -34,9 +34,12 @@ public class TodoHttpClient : ITodoService
         return todo;
     }
 
-    public async Task<IEnumerable<Todo>> GetAllAsync(SearchTodoParametersDto parametersDto)
+    public async Task<IEnumerable<Todo>> GetAsync(SearchTodoParametersDto parametersDto)
     {
-        HttpResponseMessage response = await client.GetAsync("/todos");
+        string uri = "/todos";
+        string query = ConstructQuery(parametersDto);
+
+        HttpResponseMessage response = await client.GetAsync(uri + query);
         string resultMessage = await response.Content.ReadAsStringAsync();
         if (!response.IsSuccessStatusCode)
         {
@@ -49,5 +52,34 @@ public class TodoHttpClient : ITodoService
             {
                 PropertyNameCaseInsensitive = true
             })!;
+    }
+    
+    private static string ConstructQuery(SearchTodoParametersDto p)
+    {
+        string query = "";
+        if (!string.IsNullOrEmpty(p.Username))
+        {
+            query += $"?username={p.Username}";
+        }
+
+        if (p.UserId != null)
+        {
+            query += string.IsNullOrEmpty(query) ? "?" : "&";
+            query += $"userid={p.UserId}";
+        }
+
+        if (p.CompletedStatus != null)
+        {
+            query += string.IsNullOrEmpty(query) ? "?" : "&";
+            query += $"completedStatus={p.CompletedStatus}";
+        }
+
+        if (!string.IsNullOrEmpty(p.TitleContains))
+        {
+            query += string.IsNullOrEmpty(query) ? "?" : "&";
+            query += $"titleContains={p.TitleContains}";
+        }
+
+        return query;
     }
 }

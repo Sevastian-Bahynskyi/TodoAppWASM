@@ -2,7 +2,7 @@
 @using Domain.Models
 
 <h3 class="col-title">@Title</h3>
-@foreach (var todo in Todos)
+@foreach (var todo in todos)
 {
     <div class="todo-card">
         <label style="color: dodgerblue; font-size: 1.1rem">@todo.Title</label>
@@ -13,8 +13,19 @@
 
 
 @code {
-    [Parameter]
-    public IEnumerable<Todo> Todos { get; set; }
 
+    private IEnumerable<Todo> todos;
+    [Parameter]
+    public IEnumerable<Todo> Todos
+    {
+        get => todos;
+        set
+        {
+            if(value.Equals(todos)) return;
+            todos = value;
+            TodosChanged.InvokeAsync(value);
+        } 
+    }
+    [Parameter] public EventCallback<IEnumerable<Todo>> TodosChanged { get; set; }
     [Parameter] public string Title { get; set; }
 }

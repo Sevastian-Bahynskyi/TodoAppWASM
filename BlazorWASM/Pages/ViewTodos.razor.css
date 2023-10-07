@@ -11,6 +11,35 @@
     background-color: limegreen;
 }
 
+.filters-container {
+    width: 35%;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+    flex-direction: column;
+}
+
+.filter > button{
+    margin: 0 !important;
+}
+
+
+.filter{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+}
+
+.funnel{
+    width: 30px;
+    height: 30px;
+    background-color: rgba(192, 192, 192, 0.4);
+    cursor: pointer;
+}
+
 .todos{
     display: flex;
     flex-direction: column;

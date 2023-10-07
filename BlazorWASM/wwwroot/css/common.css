@@ -39,7 +39,7 @@
     justify-content: space-between;
 }
 
-input[type=text]{
+input[type=text], input[type=number]{
     border-radius: 0.3rem;
     border-width: 1px;
     width: 10rem;
