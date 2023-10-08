@@ -18,14 +18,6 @@
 
 
     <ItemGroup>
-      <Content Update="Pages\TodoCategoryList.razor">
-        <DependentUpon>ViewTodos.razor</DependentUpon>
-      </Content>
-    </ItemGroup>
-
-
-
-    <ItemGroup>
       <Folder Include="wwwroot\img\" />
     </ItemGroup>
 
