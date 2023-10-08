@@ -59,12 +59,36 @@ public class TodoHttpClient : ITodoService
     public async Task UpdateAsync(TodoUpdateDto dto)
     {
         StringContent body = new StringContent(JsonSerializer.Serialize(dto), Encoding.UTF8, "application/json");
-        Console.WriteLine(body);
-        Console.WriteLine(JsonSerializer.Serialize(dto));
         HttpResponseMessage response = await client.PatchAsync("/todos", body);
         if (!response.IsSuccessStatusCode)
         {
             string content = await response.Content.ReadAsStringAsync();
+            throw new Exception(content);
+        }
+    }
+
+    public async Task<Todo> GetByIdAsync(int id)
+    {
+        HttpResponseMessage response = await client.GetAsync($"/todos/{id}");
+        string content = await response.Content.ReadAsStringAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(content);
+        }
+
+        return JsonSerializer.Deserialize<Todo>(content, new JsonSerializerOptions()
+        {
+            PropertyNameCaseInsensitive = true
+        })!;
+    }
+
+    public async Task DeleteAsync(int id)
+    {
+        HttpResponseMessage response = await client.DeleteAsync($"/todos/{id}");
+        string content = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
             throw new Exception(content);
         }
     }

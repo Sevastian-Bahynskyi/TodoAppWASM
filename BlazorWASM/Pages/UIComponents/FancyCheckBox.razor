@@ -4,7 +4,7 @@
         type="checkbox" 
         class="checkbox-input" 
         checked="@IsCompleted" 
-        @onchange="@((arg) => OnChange.InvokeAsync((bool)arg.Value!))"
+        @onchange="@((arg) => HandleChange((bool) arg.Value!))"
     />
     <span class="checkbox-span"></span>
 </label>
@@ -13,4 +13,19 @@
 @code {
     [Parameter] public bool IsCompleted { get; set; }
     [Parameter] public EventCallback<bool> OnChange { get; set; }
+
+    private void HandleChange(bool status)
+    {
+        try
+        {
+            OnChange.InvokeAsync(status);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Console.WriteLine(IsCompleted);
+            if (status)
+                IsCompleted = false;
+        }
+    }
 }

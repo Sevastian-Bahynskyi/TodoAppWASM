@@ -37,13 +37,13 @@
         "Username": "Emanuel"
       },
       "Title": "Very large todo, there are many characters that just use space and probably are not important, but I need to dos this, to test if label will wrap my text, at least I hope so.",
-      "IsCompleted": false
+      "IsCompleted": true
     },
     {
       "Id": 6,
       "Owner": {
-        "Id": 2,
-        "Username": "Michael"
+        "Id": 5,
+        "Username": "Sdhsh"
       },
       "Title": "Ded Maksim",
       "IsCompleted": true
@@ -55,7 +55,7 @@
         "Username": "Michael"
       },
       "Title": "seohsthj",
-      "IsCompleted": false
+      "IsCompleted": true
     },
     {
       "Id": 8,
@@ -73,7 +73,7 @@
         "Username": "Michael"
       },
       "Title": "Clean a toilet",
-      "IsCompleted": false
+      "IsCompleted": true
     },
     {
       "Id": 10,
@@ -105,8 +105,8 @@
     {
       "Id": 13,
       "Owner": {
-        "Id": 4,
-        "Username": "Dan"
+        "Id": 7,
+        "Username": "NotDan"
       },
       "Title": "Updated one",
       "IsCompleted": true

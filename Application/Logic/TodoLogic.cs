@@ -55,6 +55,11 @@ public class TodoLogic: ITodoLogic
 
         if (existing is null)
             throw new TodoNotFoundException();
+
+        if (updateDto.IsCompleted != null && existing.IsCompleted && !(bool)updateDto.IsCompleted)
+        {
+            throw new Exception("Cannot un-complete a completed Todo");
+        }
         
         existing.Owner = (await userDao.GetByIdAsync(updateDto.OwnerId ?? existing.Owner.Id))!;
         existing.Title = updateDto.Title ?? existing.Title;

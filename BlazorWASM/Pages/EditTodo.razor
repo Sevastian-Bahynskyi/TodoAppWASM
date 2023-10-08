@@ -1,0 +1,83 @@
+@page "/EditTodo/{id:int}"
+@using Domain.DTOs
+@using Domain.Models
+@using HttpClients.ClientInterfaces
+@inject IUserService userService
+@inject ITodoService todoService
+@inject NavigationManager navManager
+<h3>EditTodo</h3>
+<div class="card">
+    @if (users == null)
+    {
+        <label>Loading users...</label>
+    }
+    else if (updateDto == null)
+    {
+        <label>Loading todo data...</label>
+    }
+    else
+    {
+        <div class="form-group field">
+            <label>Title: </label>
+            <input type="text" @bind="updateDto.Title"/>
+        </div>
+        <div class="form-group field">
+            <label>User: </label>
+            <select @bind="updateDto.OwnerId">
+                @foreach (var user in users)
+                {
+                    <option value="@user.Id">@user.Username</option>
+                }
+            </select>
+        </div>
+        <button @onclick="UpdateAsync" class="actionbtn">Update</button>
+    }
+    @if (!string.IsNullOrEmpty(msg))
+    {
+        <label style="color: red;">@msg</label>
+    }
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+
+    private TodoUpdateDto? updateDto = null!;
+    private string msg = "";
+    private IEnumerable<User>? users;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            users = await userService.GetAllAsync(new SearchUserParametersDto(null));
+            Todo todo = await todoService.GetByIdAsync(Id);
+            User user = users.First(u => u!.Id == todo.Owner.Id)!;
+
+            updateDto = new TodoUpdateDto(todo.Id)
+            {
+                Title = todo.Title,
+                OwnerId = user.Id
+            };
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+
+    private async Task UpdateAsync()
+    {
+        try
+        {
+            await todoService.UpdateAsync(updateDto);
+            navManager.NavigateTo("/ViewTodos");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+}
