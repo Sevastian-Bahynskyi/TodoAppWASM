@@ -2,11 +2,17 @@
 @using HttpClients.ClientInterfaces
 @using Domain.Models;
 @using Domain.DTOs
+@using Microsoft.AspNetCore.Components.Rendering
+@using MudBlazor
+@using Radzen
 @using UIComponents
 @inject NavigationManager navManager
 @inject ITodoService todoService
 @inject IUserService userService
+@inject ContextMenuService ContextMenuService
 
+
+<RadzenContextMenu/>
 @if (todoList == null)
 {
     <label>Loading...</label>
@@ -55,35 +61,30 @@ else
         <label style="color: red;">@msg</label>
     }
     
-    
+        
     <div class="container-fluid row p-0 no-gutters d-flex">
         <div class="todos col-sm">
             <h3 class="col-title">Tasks TODO</h3>
             @foreach (var todo in todoList.Where(t => !t.IsCompleted))
             {
-                <div class="todo-card">
+                <div class="todo-card" @oncontextmenu="@(args => ShowContextMenuWithItems(todo, args))" @oncontextmenu:preventDefault="true">
                     <label style="color: dodgerblue; font-size: 1.1rem">@todo.Title</label>
                     <label style="text-align: end">Assignee: @todo.Owner.Username</label>
-                    <FancyCheckBox IsCompleted="todo.IsCompleted" OnChange="@((status) => CompleteTodo(todo, status))"/>
-                    <img src="icons/edit.gif" class="funnel" @onclick="@(() => navManager.NavigateTo($"/EditTodo/{todo.Id}"))"/>
-                    <label @onclick="@(() => DeleteAsync(todo.Id))" style="cursor:pointer; color: red; font-weight: bold">&#x2717;</label>
                 </div>
             }
         </div>
         
         <div class="vr vr-blurry p-0 d-flex flex-column justify-content-between"></div>
         <div class="todos col-sm">
-         
-        <h3 class="col-title">Completed tasks</h3>
-        @foreach (var todo in todoList.Where(t => t.IsCompleted))
-        {
-            <div class="todo-card">
-                <label style="color: dodgerblue; font-size: 1.1rem">@todo.Title</label>
-                <label style="text-align: end">Assignee: @todo.Owner.Username</label>
-                <FancyCheckBox IsCompleted="todo.IsCompleted" OnChange="@((status) => CompleteTodo(todo, status))"/>
-                <img src="icons/edit.gif" class="funnel" @onclick="@(() => navManager.NavigateTo($"/EditTodo/{todo.Id}"))"/>
-            </div>
-        }
+             
+            <h3 class="col-title">Completed tasks</h3>
+            @foreach (var todo in todoList.Where(t => t.IsCompleted))
+            {
+                <div class="todo-card" @oncontextmenu="@(args => ShowContextMenuWithItems(todo, args))" @oncontextmenu:preventDefault="true">
+                    <label style="color: dodgerblue; font-size: 1.1rem">@todo.Title</label>
+                    <label style="text-align: end">Assignee: @todo.Owner.Username</label>
+                </div>
+            }
         </div>
     </div>
 }
@@ -92,12 +93,14 @@ else
     private IEnumerable<Todo>? todoList;
     private IEnumerable<User>? userList;
     private bool doShowFilters = false;
+    private bool showModal = false;
 
     private string msg = "";
     
     private string? selectedUserIdFilter;
     private string? titleContainsFilter;
     private string? completedFilter = "all";
+
     
     protected override async Task OnInitializedAsync()
     {
@@ -110,6 +113,40 @@ else
         {
             Console.WriteLine(e);
             msg = e.Message;
+        }
+    }
+
+    void ShowContextMenuWithItems(Todo todo, MouseEventArgs args)
+    {
+        ContextMenuService.Open(args, ds =>
+            @<RadzenMenu Click="args => OnMenuItemClick(todo, args)">
+                <RadzenMenuItem Text="Edit" Value=1></RadzenMenuItem>
+                <RadzenMenuItem Text="Delete" Value=2></RadzenMenuItem>
+                @if (!todo.IsCompleted)
+                {
+                    <RadzenMenuItem Text="Complete" Value=3></RadzenMenuItem>
+                }
+            </RadzenMenu>
+            );
+    }
+    
+    async void OnMenuItemClick(Todo todo, MenuItemEventArgs args)
+    {
+        switch (args.Value)
+        {
+            case 1:
+                navManager.NavigateTo($"/EditTodo/{todo.Id}");
+                break;
+            case 2:
+                await DeleteAsync(todo.Id);
+                StateHasChanged();
+                ContextMenuService.Close();
+                break;
+            case 3:
+                await CompleteTodo(todo, !todo.IsCompleted);
+                StateHasChanged();
+                ContextMenuService.Close();
+                break;
         }
     }
 

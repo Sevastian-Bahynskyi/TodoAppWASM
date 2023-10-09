@@ -3,14 +3,20 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using BlazorWASM;
 using HttpClients.ClientInterfaces;
 using HttpClients.Implementations;
+using Radzen;
+using MudBlazor.Services;
+
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7122") });
 builder.Services.AddScoped<IUserService, UserHttpClient>();
 builder.Services.AddScoped<ITodoService, TodoHttpClient>();
+builder.Services.AddScoped<ContextMenuService>();
+builder.Services.AddRadzenComponents();
+builder.Services.AddMudServices();
+
 
 await builder.Build().RunAsync();
