@@ -23,6 +23,7 @@ public class TodoLogic: ITodoLogic
         User? user = await userDao.GetByIdAsync(dto.OwnerId);
         if (user is null)
             throw new UserNotFoundException();
+        
         Todo? existingTodo = await todoDao.GetByTitleAndUserIdAsync(dto.Title, user.Id);
 
         if (existingTodo is not null)
@@ -61,9 +62,12 @@ public class TodoLogic: ITodoLogic
             throw new Exception("Cannot un-complete a completed Todo");
         }
         
-        existing.Owner = (await userDao.GetByIdAsync(updateDto.OwnerId ?? existing.Owner.Id))!;
-        existing.Title = updateDto.Title ?? existing.Title;
-        existing.IsCompleted = updateDto.IsCompleted ?? existing.IsCompleted;
+        
+        var owner = (await userDao.GetByIdAsync(updateDto.OwnerId ?? existing.Owner.Id))!;
+        var title = updateDto.Title ?? existing.Title;
+        Todo toUpdate = new Todo(owner, title);
+        toUpdate.Id = owner.Id;
+        toUpdate.IsCompleted = updateDto.IsCompleted ?? existing.IsCompleted;
 
         await todoDao.UpdateAsync(existing);
     }

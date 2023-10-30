@@ -27,20 +27,10 @@ public class TodoController: ControllerBase
             return Created($"/todos/{todo.Id}", todo);
 
         }
-        catch (UserNotFoundException e)
+        catch (Exception e)
         {
             Console.WriteLine(e);
             return StatusCode(503, e.Message);
-        }
-        catch (TodoAlreadyExistsException e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(504, e.Message);
-        }
-        catch (InvalidTodoTitleLengthException e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(505, e.Message);
         }
     }
 
