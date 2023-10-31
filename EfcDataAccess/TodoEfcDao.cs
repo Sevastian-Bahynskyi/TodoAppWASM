@@ -43,7 +43,7 @@ public class TodoEfcDao : ITodoDao
     {
         return await context.Todos
             .Where(t => t.Title.Equals(title))
-            .Where(t => t.Owner.Id == userId)
+            .Where(t => t.OwnerId == userId)
             .FirstOrDefaultAsync();
     }
 

@@ -52,7 +52,7 @@
         {
             users = await userService.GetAllAsync(new SearchUserParametersDto(null));
             Todo todo = await todoService.GetByIdAsync(Id);
-            User user = users.First(u => u!.Id == todo.Owner.Id)!;
+            User user = users.First(u => u!.Id == todo.OwnerId)!;
 
             updateDto = new TodoUpdateDto(todo.Id)
             {

@@ -52,5 +52,23 @@ public class UserHttpClient: IUserService
                 PropertyNameCaseInsensitive = true
             })!;
         return users;
-    }   
+    }
+
+    public async Task<User> GetByIdAsync(int id)
+    {
+        HttpResponseMessage response = await client.GetAsync($"/users/{id}");
+        string result = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new Exception(result);
+        }
+
+        User user = JsonSerializer.Deserialize<User>(result,
+            new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            })!;
+
+        return user;
+    }
 }

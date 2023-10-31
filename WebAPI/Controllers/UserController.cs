@@ -39,6 +39,21 @@ public class UserController: ControllerBase
         }
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<User>> GetByIdAsync([FromRoute] int id)
+    {
+        try
+        {
+            User user = await userLogic.GetByIdAsync(id);
+            return Created($"/users/{id}", user);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAsync([FromQuery] string? username)

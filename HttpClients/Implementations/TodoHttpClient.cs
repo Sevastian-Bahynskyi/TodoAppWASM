@@ -58,8 +58,7 @@ public class TodoHttpClient : ITodoService
 
     public async Task UpdateAsync(TodoUpdateDto dto)
     {
-        StringContent body = new StringContent(JsonSerializer.Serialize(dto), Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await client.PatchAsync("/todos", body);
+        HttpResponseMessage response = await client.PatchAsJsonAsync("/todos", dto);
         if (!response.IsSuccessStatusCode)
         {
             string content = await response.Content.ReadAsStringAsync();

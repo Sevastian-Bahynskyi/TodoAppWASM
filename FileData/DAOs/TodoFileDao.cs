@@ -34,9 +34,11 @@ public class TodoFileDao: ITodoDao
     public Task<IEnumerable<Todo>> GetAsync(SearchTodoParametersDto parametersDto)
     {
         IEnumerable<Todo> todos = context.Todos
-            .Where(t => string.IsNullOrEmpty(parametersDto.Username) || t.Owner.Username.Equals(parametersDto.Username, StringComparison.OrdinalIgnoreCase))
+            .Where(t => string.IsNullOrEmpty(parametersDto.Username))
+            .Where(t => context.Users.Any(u => u.Id == t.OwnerId))
+            .Where(t => context.Users.First(u => u.Id == t.OwnerId).Username.Equals(parametersDto.Username, StringComparison.OrdinalIgnoreCase))
             .Where(t => string.IsNullOrEmpty(parametersDto.TitleContains) || t.Title.Contains(parametersDto.TitleContains, StringComparison.OrdinalIgnoreCase))
-            .Where(t => parametersDto.UserId == null || t.Owner.Id == parametersDto.UserId)
+            .Where(t => parametersDto.UserId == null || t.OwnerId == parametersDto.UserId)
             .Where(t => parametersDto.CompletedStatus == null || t.IsCompleted == parametersDto.CompletedStatus);
 
         
@@ -45,7 +47,7 @@ public class TodoFileDao: ITodoDao
 
     public Task<Todo?> GetByTitleAndUserIdAsync(string title, int userId)
     {
-        return Task.FromResult(context.Todos.FirstOrDefault(t => t.Title.Equals(title) && t.Owner.Id == userId));
+        return Task.FromResult(context.Todos.FirstOrDefault(t => t.Title.Equals(title) && t.OwnerId == userId));
     }
 
 

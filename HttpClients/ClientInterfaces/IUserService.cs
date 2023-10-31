@@ -7,4 +7,5 @@ public interface IUserService
 {
     Task<User> CreateAsync(UserCreationDto creationDto);
     Task<IEnumerable<User>> GetAllAsync(SearchUserParametersDto parametersDto);
+    Task<User> GetByIdAsync(int id);
 }

@@ -30,7 +30,7 @@ public class TodoLogic: ITodoLogic
             throw new TodoAlreadyExistsException();
         
         ValidateTodo(dto);
-        Todo toCreate = new(user, dto.Title);
+        Todo toCreate = new(dto.OwnerId, dto.Title);
         Todo todo = await todoDao.CreateAsync(toCreate);
         
         return todo;
@@ -63,13 +63,15 @@ public class TodoLogic: ITodoLogic
         }
         
         
-        var owner = (await userDao.GetByIdAsync(updateDto.OwnerId ?? existing.Owner.Id))!;
+        var owner = (await userDao.GetByIdAsync(updateDto.OwnerId ?? existing.OwnerId))!;
         var title = updateDto.Title ?? existing.Title;
-        Todo toUpdate = new Todo(owner, title);
-        toUpdate.Id = owner.Id;
-        toUpdate.IsCompleted = updateDto.IsCompleted ?? existing.IsCompleted;
+        Todo toUpdate = new Todo(owner.Id, title)
+        {
+            Id = existing.Id,
+            IsCompleted = updateDto.IsCompleted ?? existing.IsCompleted
+        };
 
-        await todoDao.UpdateAsync(existing);
+        await todoDao.UpdateAsync(toUpdate);
     }
 
     public async Task DeleteAsync(int id)

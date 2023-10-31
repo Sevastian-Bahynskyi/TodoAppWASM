@@ -69,7 +69,7 @@ else
             {
                 <div class="todo-card" @oncontextmenu="@(args => ShowContextMenuWithItems(todo, args))" @oncontextmenu:preventDefault="true">
                     <label style="color: dodgerblue; font-size: 1.1rem">@todo.Title</label>
-                    <label style="text-align: end">Assignee: @todo.Owner.Username</label>
+                    <label style="text-align: end">Assignee: @(userList.First(u => u.Id == todo.OwnerId).Username)</label>
                 </div>
             }
         </div>
@@ -82,7 +82,7 @@ else
             {
                 <div class="todo-card" @oncontextmenu="@(args => ShowContextMenuWithItems(todo, args))" @oncontextmenu:preventDefault="true">
                     <label style="color: dodgerblue; font-size: 1.1rem">@todo.Title</label>
-                    <label style="text-align: end">Assignee: @todo.Owner.Username</label>
+                    <label style="text-align: end">Assignee: @(userList.First(u => u.Id == todo.OwnerId).Username)</label>
                 </div>
             }
         </div>
@@ -114,6 +114,20 @@ else
         {
             Console.WriteLine(e);
             msg = e.Message;
+        }
+    }
+
+    async Task<User> GetUserAsync(int id)
+    {
+        try
+        {
+            User user = await userService.GetByIdAsync(id);
+            return user;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 
